@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.exam.dao.mapper.zj.ZjErrorDetailMapper">
+    <select id="queryErrorDetailByQuery" resultType="cn.exam.vo.ErrorPageVO" parameterType="cn.exam.query.ErrorQuery">
+        select a.user_id userId, b.title_name titleName, b.title_status titleStatus,
+               c.section_name sectionName, a.answer_account answerAccount,
+               a.correct_account correctAccount, a.correct_percent correctPercent
+        from zj_error_detail a
+            left join zj_title_info b on a.title_id=b.title_id
+            left join zj_section_info c on a.section_id=c.section_id
+        where a.user_id=#{userId}
+    </select>
+
+    <select id="queryErrorDetailByUserTitleId" resultType="cn.exam.domain.zj.ZjErrorDetail">
+        select id id,user_id userId,title_id titleId,title_fraction titleFraction,section_id sectionId,
+               answer_account answerAccount,correct_account correctAccount,correct_percent correctPercent,
+               create_time createTime
+        from zj_error_detail
+        where user_id=#{userId} and title_id=#{titleId}
+    </select>
+
+    <insert id="insertOneErrorDetail" parameterType="cn.exam.domain.zj.ZjErrorDetail"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into zj_error_detail(user_id,title_id,title_fraction,section_id,answer_account,correct_account,correct_percent,create_time,update_time)
+        values(#{errorDetail.userId},#{errorDetail.titleId},#{errorDetail.titleFraction},#{errorDetail.sectionId},
+               #{errorDetail.answerAccount},#{errorDetail.correctAccount},#{errorDetail.correctPercent},now(),now())
+    </insert>
+
+    <update id="updateOneErrorDetail" parameterType="cn.exam.domain.zj.ZjErrorDetail">
+        update zj_error_detail
+        set answer_account=#{errorDetail.answerAccount},correct_account=#{errorDetail.correctAccount},correct_percent=#{errorDetail.correctPercent}
+        where id=#{errorDetail.id}
+    </update>
+
+    <select id="selectSectionCorrectPercentSum" parameterType="String" resultType="cn.exam.so.SectionCorrectSO">
+        select section_id sectionId, SUM(title_fraction) sectionTotalFraction,SUM(title_fraction*correct_percent) sectionCorrectFraction
+        from zj_error_detail
+        where user_id=#{userId}
+        group by section_id
+    </select>
+
+    <select id="getTitleAndPercents" resultType="cn.exam.vo.ErrorPercentVO" parameterType="cn.exam.query.ErrorQuery">
+        select title_id titleId, correct_percent correctPercent
+        from zj_error_detail
+        where user_id=#{userId}
+        order by correct_percent desc
+    </select>
+
+</mapper>

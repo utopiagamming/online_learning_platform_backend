@@ -1,0 +1,28 @@
+#DataSource
+spring:
+  profiles: dev
+
+  # HTTP ENCODING
+  http:
+    encoding.charset: UTF-8
+    encoding.enable: true
+    encoding.force: true
+  datasource:
+    url: jdbc:mysql://localhost:3306/cat?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: zy010818
+    driverClass: com.mysql.jdbc.Driver
+    platform: mysql
+    type: com.alibaba.druid.pool.DruidDataSource
+    #    config-location: classpath:mybatis/mybatis-config.xml
+    #    mapper-locations: classpath:mybatis/mapper/*.xml
+  data:
+    neo4j:
+      uri: bolt://localhost:7687
+#      uri: neo4j://localhost:7688
+      username: neo4j
+      password: zy010818
+
+#文件上传临时目录
+#upload.file.absolute.path: /root/file/upload/
+upload.file.absolute.path: D:/upload/tmp/

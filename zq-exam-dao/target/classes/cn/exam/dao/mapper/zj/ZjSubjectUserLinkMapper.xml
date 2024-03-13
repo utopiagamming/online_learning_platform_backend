@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.exam.dao.mapper.zj.ZjSubjectUserLinkMapper">
+    <select id="queryByList" resultType="cn.exam.domain.zj.ZjSubjectUserLink">
+        SELECT class_id classId,paper_id paperId,title_id  titleId
+        FROM zj_subject_user_link
+        WHERE paper_id=#{paperId}
+    </select>
+
+    <delete id="deleteByPaperId" parameterType="java.lang.Integer">
+        delete
+        from zj_subject_user_link
+        where paper_id=#{paperId}
+    </delete>
+
+    <select id="queryTitleIdsByPaperId" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        select title_id titleId
+        from zj_subject_user_link
+        where paper_id=#{paperId}
+    </select>
+</mapper>

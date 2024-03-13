@@ -1,0 +1,29 @@
+#DataSource
+spring:
+  profiles: deploy
+
+  # HTTP ENCODING
+  http:
+    encoding.charset: UTF-8
+    encoding.enable: true
+    encoding.force: true
+
+  datasource:
+#    url: jdbc:mysql://49.233.74.211:3306/zj_exam?useUnicode=true&characterEncoding=utf-8
+#    username: cat
+#    password: cat123
+#    driverClass: com.mysql.jdbc.Driver
+#    platform: mysql
+#    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/cat ?useUnicode=true &characterEncoding=utf-8 &useSSL=false
+    username: root
+    password: zy010818
+    driverClass: com.mysql.jdbc.Driver
+    # platform: mysql
+    # type: com.alibaba.druid.pool.DruidDataSource
+  #    config-location: classpath:mybatis/mybatis-config.xml
+  #    mapper-locations: classpath:mybatis/mapper/*.xml
+
+#mybatis:
+#  type-aliases-package: cn.zq.exam.domain          #mybatis开启实体类别名
+#  mapper-locations: classpath:mapper/*.xml   #扫描mapper所在包

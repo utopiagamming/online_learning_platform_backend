@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.exam.dao.mapper.zj.ZjTitleInfoMapper">
+    <sql id="baseCondition">
+        <where>
+            <if test="keyWords!=null and keyWords!=''">
+            (b.subject_name like concat('%',#{keyWords},'%')
+            or c.class_name like concat('%',#{keyWords},'%')
+            or a.user_name like concat('%',#{keyWords},'%')
+            )
+            </if>
+            <if test="subjectName!=null and subjectName!=''">
+                b.subject_name =#{subjectName}
+            </if>
+            <if test="titleName!=null and titleName!=''">
+                a.title_name =#{titleName}
+            </if>
+<!--            <if test="className!=null and className!=''">-->
+<!--                c.class_name =#{className}-->
+<!--            </if>-->
+            <if test="titleType!='' and titleType!=null ">
+                a.title_type =#{titleType}
+            </if>
+            <if test="titleFraction!='' and titleFraction!=null ">
+                a.title_fraction =#{titleFraction}
+            </if>
+        </where>
+    </sql>
+
+    <select id="queryPage" resultType="cn.exam.vo.TitleVO" parameterType="cn.exam.query.TitlePageQuery">
+        select  a.title_id  titleId, a.title_name  titleName, a.title_type titleType,
+                a.title_fraction titleFraction ,a.title_answer  titleAnswer, a.title_status titleStatus,
+                a.choice1 , a.choice2, a.choice3, a.choice4,
+                a.create_time createTime, b.subject_name subjectName
+        from zj_title_info a left join zj_subject_info b on a.subject_id = b.subject_id
+        order by a.subject_id asc,a.title_id asc
+          <include refid="baseCondition"></include>
+    </select>
+
+    <select id="queryTitleInfo" resultType="cn.exam.vo.TitleVO">
+        select  a.title_id  titleId, a.title_name  titleName, a.title_type titleType, a.title_fraction titleFraction ,
+                a.title_answer  titleAnswer, a.title_status titleStatus,
+                a.choice1 , a.choice2, a.choice3, a.choice4,a.subject_id subjectId,
+                a.create_time createTime, b.subject_name subjectName
+          from zj_title_info a left join zj_subject_info b on a.subject_id = b.subject_id
+          where a.title_id=#{titleId}
+    </select>
+
+    <!--在此处限定chapterId为12，即只抽取第二章的题目用以测试-->
+    <select id="queryTitleByDifficulty" resultType="cn.exam.domain.zj.ZjTitleInfo">
+          select  a.title_id  titleId, a.title_name  titleName, a.title_type titleType, a.title_fraction titleFraction ,
+                  a.title_answer  titleAnswer, a.title_status titleStatus,
+                  a.choice1 , a.choice2, a.choice3, a.choice4,
+                  a.create_time createTime, b.subject_name subjectName
+          from zj_title_info a left join zj_subject_info b on a.subject_id = b.subject_id
+          where a.subject_id = #{subjectId} and a.title_type  &gt;= #{difficulty1} and a.title_type &lt;= #{difficulty2}
+                and a.chapter_id=12
+    </select>
+
+    <select id="queryListByTitleId" resultType="cn.exam.domain.zj.ZjTitleInfo">
+        select title_id titleId, title_answer titleAnswer ,title_fraction  titleFraction from zj_title_info
+        where title_id IN
+        <foreach collection="titleIdList" open="(" separator="," close=")" item="titleId">
+            #{titleId}
+        </foreach>
+    </select>
+
+    <select id="queryListByTitleIdE" resultType="cn.exam.domain.zj.ZjTitleInfo">
+        select  a.title_id  titleId, a.title_name  titleName, a.title_type titleType, a.title_fraction titleFraction ,
+                a.title_answer  titleAnswer, a.title_status titleStatus,
+                a.choice1 , a.choice2, a.choice3, a.choice4,
+                a.create_time createTime, a.subject_id subjectId
+        from zj_title_info a
+--             left join zj_subject_info b on a.subject_id = b.subject_id
+        where a.title_id IN
+        <foreach collection="titleIdList" open="(" separator="," close=")" item="titleId">
+            #{titleId}
+        </foreach>
+    </select>
+
+    <select id="querySectionIdByTitleId" parameterType="Integer" resultType="cn.exam.so.FracAndSecSO">
+        select title_fraction titleFraction,section_id sectionId
+        from zj_title_info
+        where title_id=#{titleId}
+    </select>
+
+    <select id="getAllTitlesWithConcepts" parameterType="Integer" resultType="cn.exam.vo.TitleConceptVO">
+        select title_id titleId, concept_ids conceptIds
+        from zj_title_info
+        where chapter_id=#{chapterId}
+    </select>
+
+    <select id="getLayer2ByLayer1" parameterType="Integer" resultType="Integer">
+        select concept_layer_2_id conceptLayer2Id
+        from zj_concept_layer_2_info
+        where concept_layer_2_id like concat(#{layer1Id}+1,'_')
+    </select>
+
+    <update id="updateDistributionVectorByTitleId">
+        update zj_title_info
+        set distribution_vector=#{distributionVector}
+        where title_id=#{titleId}
+    </update>
+
+    <select id="getAllTitleAndDistributionVector" resultType="cn.exam.vo.TitleVectorVO">
+        select title_id titleId, distribution_vector distributionVector
+        from zj_title_info
+        where chapter_id=12
+        order by title_id
+    </select>
+
+    <select id="selectTotalScoreByIdList" parameterType="java.util.List" resultType="java.lang.Integer">
+        select sum(title_fraction) from zj_title_info where title_id in
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getTitleAndConceptsByTitleId" parameterType="java.lang.Integer" resultType="cn.exam.vo.TitleConceptVO">
+        select title_id titleId, concept_ids conceptIds
+        from zj_title_info
+        where title_id=#{titleId}
+    </select>
+
+    <select id="queryAllVideos" resultType="cn.exam.domain.zj.ZjVideoInfo">
+        select video_id videoId,video_url videoUrl,video_name videoName,video_duration videoDuration,
+               video_size videoSize,create_time createTime,update_time updateTime
+        from zj_video_info order by video_id
+    </select>
+
+    <delete id="deleteVideo" parameterType="java.lang.Integer">
+        delete from zj_video_info
+        where video_id=#{videoId}
+    </delete>
+
+    <select id="getAllHashStrings" resultType="java.lang.String">
+        select hash_string hashString
+        from zj_video_info
+    </select>
+
+    <insert id="insertVideo" parameterType="cn.exam.domain.zj.ZjVideoInfo"
+            useGeneratedKeys="true" keyProperty="video_id">
+        insert into zj_video_info(video_url,video_name,video_duration,video_size,
+                                  section_id,hash_string,create_time,update_time)
+        values (#{videoInfo.videoUrl},#{videoInfo.videoName},#{videoInfo.videoDuration},
+                #{videoInfo.videoSize},#{videoInfo.sectionId},#{videoInfo.hashString},now(),now())
+    </insert>
+</mapper>

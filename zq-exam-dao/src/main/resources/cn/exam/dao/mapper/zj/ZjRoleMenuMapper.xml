@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.exam.dao.mapper.zj.ZjRoleMenuMapper">
+    <select id="queryMenuList" resultType="cn.exam.vo.MenuInfoVO" parameterType="ArrayList">
+        SELECT DISTINCT a.role_id roleId,b.menu_id menuId,b.menu_name  title,b.menu_degree menuDegree,b.parent_id parentId, b.menu_index menuIndex
+        FROM zj_role_menu a LEFT JOIN zj_menu_info b ON a.`menu_id` = b.`menu_id` WHERE b.menu_status=1 and a.role_id in
+        <foreach collection="roleIdList" open="(" separator="," close=")" item="roleId">
+            #{roleId}
+        </foreach>
+    </select>
+
+    <select id="queryRoleMenuInfoByRoleId" resultType="cn.exam.domain.zj.ZjRoleMenu">
+        select id from zj_role_menu where role_id=#{roleId}
+    </select>
+</mapper>

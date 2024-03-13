@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>zq-exam-parent</artifactId>
+        <groupId>cn.exam</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>zq-exam-controller</artifactId>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.exam</groupId>
+            <artifactId>zq-exam-service</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.6.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.lowagie</groupId>
+                    <artifactId>itext</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>2.0.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>1.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-ehcache</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.microsoft.sqlserver</groupId>-->
+<!--            <artifactId>sqljdbc4</artifactId>-->
+<!--            <version>4.0</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-websocket</artifactId>-->
+<!--        </dependency>-->
+
+    </dependencies>
+
+<!--    <build>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                &lt;!&ndash;该插件主要用途：构建可执行的JAR &ndash;&gt;-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-jar-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <archive>-->
+<!--                        &lt;!&ndash;生成的jar中，不要包含pom.xml和pom.properties这两个文件 &ndash;&gt;-->
+<!--                        <addMavenDescriptor>false</addMavenDescriptor>-->
+<!--                        <manifest>-->
+<!--                            &lt;!&ndash;是否要把第三方jar放到manifest的classpath中 &ndash;&gt;-->
+<!--                            <addClasspath>true</addClasspath>-->
+<!--                            &lt;!&ndash; 生成的manifest中classpath的前缀，因为要把第三方jar放到lib目录下，所以classpath的前 &ndash;&gt;-->
+<!--                            <classpathPrefix>lib/</classpathPrefix>-->
+<!--                            &lt;!&ndash; 应用的main class 该类放在最外层包含所有子包 &ndash;&gt;-->
+<!--                            <mainClass>cn.exam.MainApplication</mainClass>-->
+<!--                        </manifest>-->
+<!--                    </archive>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+
+<!--        </plugins>-->
+<!--    </build>-->
+
+</project>

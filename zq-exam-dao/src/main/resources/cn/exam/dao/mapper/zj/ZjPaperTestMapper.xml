@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.exam.dao.mapper.zj.ZjPaperTestMapper">
+    <select id="queryPaperTest" resultType="cn.exam.vo.PaperTestVO">
+        SELECT a.id, b.title_id titleId, b.title_name  titleName, b.title_status  titleStatus,
+               b.choice1 ,b.choice2 ,b.choice3 ,b.choice4 ,a.title_fraction titleFraction,
+               c.paper_name  paperName,c.exam_date examDate ,a.user_name userName
+        FROM zj_paper_test a
+            LEFT JOIN zj_title_info b ON a.title_id = b.title_id
+            LEFT JOIN zj_paper_info c ON a.paper_id = c.paper_id
+        where a.user_id=#{userId} and a.paper_id =#{paperId}
+    </select>
+
+    <select id="queryIdByPaperId" resultType="java.lang.Integer">
+        select id from zj_paper_test
+        where paper_id =#{paperId}
+    </select>
+
+    <select id="queryListById" resultType="cn.exam.domain.zj.ZjPaperTest">
+        select id , answer ,title_answer  titleAnswer ,title_fraction titleFraction from zj_paper_test where
+        id IN
+        <foreach collection="ids" open="(" separator="," close=")" item="id">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="queryPaperTestByUserIdAndPaperId" resultType="cn.exam.domain.zj.ZjPaperTest">
+        SELECT id ,title_id titleId ,user_id userId ,user_name userName ,answer FROM zj_paper_test
+        where paper_id =#{paperId} and user_id=#{userId}
+    </select>
+
+    <insert id="insertOnePaperTest"  useGeneratedKeys="true" keyProperty="id">
+        insert into zj_paper_test(class_id,paper_id,user_id,user_name,title_id,title_answer,answer,title_fraction,create_time)
+        values (#{paperTest.classId},#{paperTest.paperId},#{paperTest.userId},#{paperTest.userName},
+                #{paperTest.titleId},#{paperTest.titleAnswer},#{paperTest.answer},#{paperTest.titleFraction},now())
+    </insert>
+    
+    <update id="updateOnePaperTest" parameterType="cn.exam.domain.zj.ZjPaperTest">
+        update zj_paper_test
+        set answer=#{paperTest.answer}
+        where id=#{paperTest.id}
+    </update>
+
+    <select id="queryTitleIdById" parameterType="Integer" resultType="Integer">
+        select title_id titleId
+        from zj_paper_test
+        where id=#{id}
+    </select>
+</mapper>

@@ -1,0 +1,19 @@
+#DataSource
+spring:
+    profiles: test
+
+    # HTTP ENCODING
+    http:
+        encoding.charset: UTF-8
+        encoding.enable: true
+        encoding.force: true
+
+    # DRUID线程池
+    datasource:
+        url:
+        username:
+        password:
+        driverClass: com.mysql.jdbc.Driver
+        platform: mysql
+        type: com.alibaba.druid.pool.DruidDataSource
+

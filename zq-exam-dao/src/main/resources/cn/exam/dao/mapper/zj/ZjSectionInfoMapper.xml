@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.exam.dao.mapper.zj.ZjSectionInfoMapper">
+    <select id="getAllSectionsBySubject" parameterType="cn.exam.query.SectionQuery" resultType="cn.exam.vo.SectionVO">
+        select a.section_id sectionId,c.subject_name subjectName, b.chapter_name chapterName, a.section_name sectionName
+        from zj_section_info a
+            left join zj_chapter_info b on a.chapter_id=b.chapter_id
+            left join zj_subject_info c on a.subject_id=c.subject_id
+        where a.subject_id=#{subjectId}
+    </select>
+
+    <select id="getAllChapterBySubjectId" parameterType="Integer" resultType="cn.exam.so.ChapterSO">
+        select chapter_id chapterId,chapter_name chapterName
+        from zj_chapter_info
+        where subject_id=#{subjectId}
+        order by chapter_id
+    </select>
+
+<!--    <select id="getAllSectionByChapterId" >-->
+<!--        -->
+<!--    </select>-->
+    
+    <resultMap id="chapterAndSections" type="cn.exam.so.ChapterAndSectionsSO">
+        <result property="chapterId" column="chapter_id"></result>
+        <result property="chapterName" column="chapter_name"></result>
+        <collection property="sectionList" ofType="cn.exam.so.SectionSO">
+            <result property="sectionId" column="section_id"></result>
+            <result property="sectionName" column="section_name"></result>
+        </collection>
+    </resultMap>
+
+    <select id="getAllSectionByChapterId" resultMap="chapterAndSections" parameterType="Integer">
+        select b.chapter_id chapterId,b.chapter_name chapterName,a.section_id sectionId,a.scetion_name sectionName
+        from zj_section_info a
+            left join (select b.chapter_id chapterId,b.chapter_name chapterName from zj_chapter_info b ) on a.chapter_id=b.chapter_id
+        where a.subject_id=#{subjectId}
+        order by chapter_id asc
+    </select>
+</mapper>

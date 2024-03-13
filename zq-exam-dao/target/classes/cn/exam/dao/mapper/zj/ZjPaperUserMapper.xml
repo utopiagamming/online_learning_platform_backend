@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.exam.dao.mapper.zj.ZjPaperUserMapper">
+    <select id="queryPaper" resultType="cn.exam.domain.zj.ZjPaperUser" parameterType="cn.exam.domain.zj.ZjPaperUser">
+        select id
+        from zj_paper_user
+        where paper_id=#{paperId} and user_id =#{userId} and status=0
+    </select>
+
+    <sql id="baseCondition">
+        <where>
+            <if test="keyWords!=null and keyWords!=''">
+                (a.fraction like concat('%',#{keyWords},'%')
+                or b.paper_name like concat('%',#{keyWords},'%')
+                or c.user_name like concat('%',#{keyWords},'%')
+                or d.class_name like concat('%',#{keyWords},'%')
+                or b.paper_score like concat('%',#{keyWords},'%')
+                )
+            </if>
+            <if test="className!=null and className!=''">
+                and d.class_name =#{className}
+            </if>
+            <if test="userName!=null and userName!=''">
+                and c.user_name =#{userName}
+            </if>
+            <if test="paperName!=null and paperName!=''">
+                and b.paper_name =#{paperName}
+            </if>
+            <if test="paperId!=null">
+                and b.paper_id =#{paperId}
+            </if>
+            <if test="classId!=null">
+                and d.class_id =#{classId}
+            </if>
+
+        </where>
+    </sql>
+
+    <select id="queryPage" resultType="cn.exam.vo.PaperUserPage" parameterType="cn.exam.query.PaperUserQuery">
+        SELECT a.paper_id paperId,d.class_id classId, a.user_id ,a.fraction ,b.paper_name paperName,
+               b.difficulty ,c.user_name userName,c.class_id,d.class_name className ,b.paper_score paperScore
+        FROM zj_paper_user a
+        LEFT JOIN zj_paper_info b ON a.paper_id = b.paper_id
+        LEFT JOIN zj_user_info c ON a.user_id = c.user_id
+        LEFT JOIN zj_class_info d ON c.class_id = d.class_id
+        WHERE c.user_name IS NOT NULL AND d.class_name IS NOT NULL
+        ORDER BY a.create_time DESC
+        <include refid="baseCondition"></include>
+    </select>
+
+    <select id="queryPaperExport" resultType="cn.exam.vo.PaperExportVO">
+        SELECT c.paper_name  paperName,b.title_name titleName, b.title_answer  titleAnswer, b.title_fraction titleFraction,
+               b.choice1 ,b.choice2,b.choice3 ,b.choice4
+        FROM  zj_subject_user_link a LEFT JOIN zj_title_info b ON a.title_id = b.title_id
+        LEFT JOIN zj_paper_info c ON a.paper_id = c.paper_id
+        WHERE a.paper_id = #{paperId}
+    </select>
+
+    <select id="queryExport" resultType="cn.exam.vo.AchievementExportVO">
+     SELECT a.fraction ,b.paper_name paperName, b.difficulty ,c.user_name userName,d.class_name className ,b.paper_score paperScore
+        FROM zj_paper_user a
+        LEFT JOIN zj_paper_info b ON a.paper_id = b.paper_id
+        LEFT JOIN zj_user_info c ON a.user_id = c.user_id
+        LEFT JOIN zj_class_info d ON c.class_id = d.class_id
+    </select>
+
+    <select id="queryPaperByUserId" resultType="cn.exam.vo.PaperByUserIdVO" parameterType="cn.exam.query.PaperByUserIdQuery">
+        SELECT a.fraction ,b.paper_name paperName,c.user_name userName,b.paper_score paperScore,a.id,b.paper_id paperId
+        FROM zj_paper_user a
+            LEFT JOIN zj_paper_info b ON a.paper_id = b.paper_id
+            LEFT JOIN zj_user_info c ON a.user_id = c.user_id
+        WHERE a.status =1 and a.user_id=#{userId}
+    </select>
+
+    <select id="queryIdByPaperId" resultType="java.lang.Integer">
+        select id from zj_paper_user
+        where paper_id =#{paperId}
+    </select>
+</mapper>
